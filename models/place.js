@@ -15,12 +15,75 @@ module.exports = (sequelize, DataTypes) => {
         }
     };
     Place.init({
-        name: DataTypes.STRING,
-        price: DataTypes.INTEGER,
-        description: DataTypes.STRING,
-        location: DataTypes.STRING,
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'Please enter name'
+                },
+                notEmpty: {
+                    msg: 'Please enter name'
+                }
+            }
+        },
+        price: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'Please enter Price'
+                },
+                notEmpty: {
+                    msg: 'Please enter Price'
+                },
+                min: {
+                    args: [0],
+                    msg: 'Price must be above 0'
+                }
+            }
+        },
+        description: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'Please enter description'
+                },
+                notEmpty: {
+                    msg: 'Please enter description'
+                }
+            }
+        },
+        location: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'Please enter location'
+                },
+                notEmpty: {
+                    msg: 'Please enter location'
+                }
+            }
+        },
         image: DataTypes.STRING,
-        quota: DataTypes.INTEGER
+        quota: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            validate: {
+                notNull: {
+                    msg: 'Please enter quota'
+                },
+                notEmpty: {
+                    msg: 'Please enter quota'
+                },
+                min: {
+                    args: [0],
+                    msg: 'Quota must be above 0'
+                }
+            }
+        }
     }, {
         sequelize,
         modelName: 'Place',

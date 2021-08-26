@@ -2,27 +2,27 @@
     <div class="row">
         <h1 class="text-center">Edit place</h1>
         <div class="col-md-6 offset-md-3">
-            <form action="/places/<%=place._id%>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
+            <form action="/places/edit/<%=place.id%>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label" for="title">Title</label>
-                    <input class="form-control" type="text" id="title" name="place[title]" value="<%=place.title %>" required>
+                    <input class="form-control" type="text" id="title" name="name" value="<%=place.name %>" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="location">Location</label>
-                    <input class="form-control" type="text" id="location" name="place[location]" value="<%=place.location %>" required>
+                    <input class="form-control" type="text" id="location" name="location" value="<%=place.location %>" required>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="price">place Price</label>
+                    <label class="form-label" for="price">Place Price</label>
                     <div class="input-group">
                         <span class="input-group-text" id="price-label">$</span>
-                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price" aria-describedby="price-label" name="place[price]" value="<%=place.price %>" required>\
+                        <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price" aria-describedby="price-label" name="price" value="<%=place.price %>" required>\
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -31,7 +31,7 @@
 
                 <div class="mb-3">
                     <label class="form-label" for="description">Description</label>
-                    <textarea class="form-control" type="text" id="description" name="place[description]" required><%= place.description%></textarea>
+                    <textarea class="form-control" type="text" id="description" name="description" required><%= place.description%></textarea>
                     <div class="valid-feedback">
                         Looks good!
                     </div>
@@ -40,26 +40,21 @@
                     <div class="form-file custom-file">
                         <input type="file" class="form-file-input" id="image" name="image" multiple>
                         <label class="form-file-label" for="image">
-                        <span class="form-file-text custom-file-label">Add more image(s)...</span>
+                        <span class="form-file-text custom-file-label">Replace image...</span>
                         <span class="form-file-button">Browse</span>
                     </label>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <% place.images.forEach(function(img, i) {  %>
-
-                        <img src="<%=img.thumbnail %>" class="img-thumbnail" alt="">
-                        <div class="form-check-inline">
-                            <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%=img.filename%>">
-                        </div>
-                        <label for="image-<%=i%>">Delete?</label>
-                        <% })%>
+                    <div class="image">
+                        <img src="<%= place.image%>" width="400px" alt="" srcset="">
+                    </div>
                 </div>
                 <div class="mb-3">
                     <button class="btn btn-info">Update place</button>
                 </div>
             </form>
-            <a href="/places/<%= place._id%>">Back To place</a>
+            <a href="/places/show/<%= place.id%>">Back To place</a>
 
         </div>
     </div>

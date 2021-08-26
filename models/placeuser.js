@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            PlaceUser.belongsTo(models.Place, { foreignKey: 'placeId' })
-            PlaceUser.belongsTo(models.User, { foreignKey: 'userId' })
+            PlaceUser.belongsTo(models.Place, { foreignKey: 'PlaceId' })
+            PlaceUser.belongsTo(models.User, { foreignKey: 'UserId' })
         }
     };
     PlaceUser.init({
         status: DataTypes.STRING,
-        userId: DataTypes.INTEGER,
-        placeId: DataTypes.INTEGER
+        UserId: DataTypes.INTEGER,
+        PlaceId: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: 'PlaceUser',

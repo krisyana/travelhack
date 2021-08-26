@@ -1,0 +1,31 @@
+<% layout('layouts/boilerplate')%>
+
+    <div class="container">
+        <h1>User Place</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Place Name</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% user.Places.forEach(el => { %>
+
+                    <tr>
+                        <td>
+                            <%= el.name %>
+                        </td>
+                        <td>
+                            <%= el.PlaceUser.status%>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="/places/delete/<%= el.id %>">Delete</a>
+                        </td>
+                    </tr>
+
+                    <% }) %>
+            </tbody>
+        </table>
+    </div>

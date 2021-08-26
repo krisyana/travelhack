@@ -1,7 +1,8 @@
 const { User, Place, PlaceUser } = require('../models');
 const ExpressError = require('../helpers/ExpressError');
 const { compare } = require('../helpers/bcrypt')
-
+const getHoursPosted = require('../helpers/getHourPosted');
+const { Op } = require("sequelize");
 
 
 class Controller {
@@ -28,6 +29,7 @@ class Controller {
                         res.redirect('/places')
                     } else {
                         req.flash('error', 'User/Password Salah')
+                        res.redirect('/login')
                     }
                 } else {
                     req.flash('error', 'User/Password Salah')
@@ -46,6 +48,7 @@ class Controller {
         }
     }
 
+
     static registerPost(req, res) {
         const { username, password, email } = req.body;
         User.create({ username, password, email })
@@ -55,11 +58,21 @@ class Controller {
                 req.flash('success', 'Welcome to TravelHack')
                 res.redirect('/places')
             })
-            .catch(err => req.flash('error', err))
+            .catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    req.flash('error', err.errors.map(error => error.message))
+                    res.redirect('/register')
+                } else {
+                    res.flash('error', err)
+                    res.redirect('/register')
+                }
+            })
     }
 
     static updateUser(req, res) {
-        res.render('users/update');
+        User.findByPk(req.params.id)
+            .then(data => res.render('users/update', { user: data }))
+            .catch(err => res.send(err))
     }
 
     static updateUserPost(req, res) {
@@ -74,8 +87,8 @@ class Controller {
 
 
     static allPlaces(req, res) {
-        Place.findAll()
-            .then(data => res.render('places/index', { places: data }))
+        Place.findAll({ include: User })
+            .then(data => res.render('places/index', { places: data, getHoursPosted }))
             .catch(err => res.send(err))
 
     }
@@ -94,15 +107,41 @@ class Controller {
                 image,
                 description
             })
+            .then(data => {
+                return PlaceUser.create({
+                    UserId: req.session.user.id,
+                    PlaceId: data.id,
+                    status: "Author"
+                })
+            })
             .then(_ => {
                 req.flash('success', 'Place Added')
                 res.redirect('/places')
             })
-            .catch(err => req.flash('error', err))
+            .catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    req.flash('error', err.errors.map(error => error.message))
+                    res.redirect('/places/add')
+                } else {
+                    res.flash('error', err)
+                    res.redirect('/places/add')
+                }
+            })
+    }
+
+    static viewPlace(req, res) {
+        Place.findByPk(req.params.id)
+            .then(data => res.render('places/show', { place: data }))
+            .catch(err => {
+                req.flash('error', err)
+                res.redirect('/places')
+            })
     }
 
     static edit(req, res) {
-        res.render('places/edit');
+        Place.findByPk(req.params.id)
+            .then(data => res.render('places/edit', { place: data }))
+            .catch(err => res.send(err))
     }
 
     static editPlacesPost(req, res) {
@@ -117,19 +156,53 @@ class Controller {
                 description
             }, { where: { id: req.params.id } })
             .then(_ => res.redirect('/places'))
-            .catch(err => res.send(err))
+            .catch(err => {
+                if (err.name === "SequelizeValidationError") {
+                    req.flash('error', err.errors.map(error => error.message))
+                    res.redirect(`/places/${req.params.id}`)
+                } else {
+                    res.flash('error', err)
+                    res.redirect(`/places/${req.params.id}`)
+                }
+            })
     }
     static AddUserToPlace(req, res) {
         res.render('places/addUser')
     }
     static AddUserToPlacePost(req, res) {
-        let PlaceId = req.params.id
+        let PlaceId = +req.params.id
         PlaceUser.create({
                 PlaceId,
-                UserId: req.currentUser.id,
-                status: 'Done'
-            }, { where: { id: req.params.id } })
-            .then(_ => res.redirect('/places'))
+                UserId: req.session.user.id,
+                status: 'Booked'
+            })
+            .then(_ => {
+                req.flash('success', 'Place Booked')
+                res.redirect('/places')
+            })
+            .catch(err => res.send(err))
+    }
+    static bookedPlace(req, res) {
+        let id = req.session.user.id;
+        User.findByPk(id, { include: Place })
+            .then(data => {
+                res.render("places/bookedPlace", { user: data })
+            })
+            .catch(err => res.send(err))
+    }
+
+    static deletebookedPlace(req, res) {
+        let id = req.params.id
+        PlaceUser.destroy({
+                where: {
+                    PlaceId: id,
+                    UserId: req.session.user.id
+                }
+            })
+            .then(data => {
+                req.flash('success', 'Booked Place Deleted')
+                res.redirect("/places/bookedPlace")
+            })
             .catch(err => res.send(err))
     }
 
