@@ -17,7 +17,7 @@
         "username": "root",
         "password": null,
         "database": "database_production",
-        "host": "locahost",
+        "host": "localhost",
         "dialect": "postgres",
         "ssl": true,
         "use_env_variable": "DATABASE_URL"
