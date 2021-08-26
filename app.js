@@ -14,8 +14,6 @@ const route = require('./routes')
 const app = express();
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
-
-app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
 
 app.use(express.urlencoded({ extended: true }));
@@ -40,7 +38,7 @@ app.use(flash());
 // app.use(helmet());
 
 app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
+    res.locals.currentUser = req.session.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();

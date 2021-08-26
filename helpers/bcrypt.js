@@ -4,8 +4,8 @@ function hash(password) {
     return bcrypt.hashSync(password, 10);
 }
 
-function compare(password) {
-    return bcrypt.compareSync(password, hash)
+function compare(password, hashedpasword) {
+    return bcrypt.compareSync(password, hashedpasword)
 }
 
 module.exports = { hash, compare }
