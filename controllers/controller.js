@@ -1,4 +1,5 @@
 const { User, Place, PlaceUser } = require('../models')
+const ExpressError = require('../helpers/ExpressError');
 
 class Controller {
     static home(req, res) {
@@ -26,7 +27,16 @@ class Controller {
         res.render('places/index');
     }
     static addPlaces(req, res) {
-        res.render('places/add');
+        const { name, location, price, quota, description } = req.body;
+        Place.create({
+                name,
+                location,
+                price,
+                quota,
+                description
+            })
+            .then(_ => res.redirect('/places'))
+            .catch(err => req.flash('error', err))
     }
 
     static addPlacesPost(req, res) {
