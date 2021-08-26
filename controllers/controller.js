@@ -166,9 +166,7 @@ class Controller {
                 }
             })
     }
-    static AddUserToPlace(req, res) {
-        res.render('places/addUser')
-    }
+
     static AddUserToPlacePost(req, res) {
         let PlaceId = +req.params.id
         PlaceUser.create({
@@ -176,6 +174,7 @@ class Controller {
                 UserId: req.session.user.id,
                 status: 'Booked'
             })
+            .then(data => Place.decreasequantity(data.PlaceId, 2))
             .then(_ => {
                 req.flash('success', 'Place Booked')
                 res.redirect('/places')

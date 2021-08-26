@@ -9,9 +9,17 @@ module.exports = (sequelize, DataTypes) => {
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
+        get date() {
+            return this.createdAt.toLocaleString()
+        }
+
+
         static associate(models) {
             // define association here
             Place.belongsToMany(models.User, { through: 'PlaceUser' })
+        }
+        static decreasequantity(id, num) {
+            return Place.decrement({ quota: num }, { where: { id } })
         }
     };
     Place.init({
